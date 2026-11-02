@@ -1,0 +1,9 @@
+# Request: the drone's WhyCode pose at the Switch.  The stable route is
+# planned from this actual position, never from the take-off point.
+geometry_msgs/Pose start
+---
+# Response: waypoints in flight order, from the Switch through all three
+# stable survivors and ending at F6, plus their WhyCode grid marker ids.
+# A trailing '*' marks a fly-through intersection; a plain id is a stop.
+geometry_msgs/PoseArray waypoints
+string[] marker_ids
