@@ -2,29 +2,29 @@ rosbag2_bagfile_information:
   version: 5
   storage_identifier: sqlite3
   duration:
-    nanoseconds: 90475053014
+    nanoseconds: 89000505754
   starting_time:
-    nanoseconds_since_epoch: 1793859588114880440
-  message_count: 6395
+    nanoseconds_since_epoch: 1793942418446661346
+  message_count: 6303
   topics_with_message_count:
     - topic_metadata:
         name: /controller_heartbeat
         type: std_msgs/msg/Header
         serialization_format: cdr
         offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
-      message_count: 871
+      message_count: 859
     - topic_metadata:
         name: /ros_check
         type: diagnostic_msgs/msg/DiagnosticArray
         serialization_format: cdr
         offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
-      message_count: 2762
+      message_count: 2722
     - topic_metadata:
         name: /whycode_node/markers
         type: whycode_interfaces/msg/MarkerArray
         serialization_format: cdr
         offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
-      message_count: 2762
+      message_count: 2722
   compression_format: ""
   compression_mode: ""
   relative_file_paths:
@@ -32,7 +32,7 @@ rosbag2_bagfile_information:
   files:
     - path: task_3a_0.db3
       starting_time:
-        nanoseconds_since_epoch: 1793859588114880440
+        nanoseconds_since_epoch: 1793942418446661346
       duration:
-        nanoseconds: 90475053014
-      message_count: 6395
+        nanoseconds: 89000505754
+      message_count: 6303

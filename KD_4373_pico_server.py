@@ -920,6 +920,9 @@ class WayPointServer(Node):
                         self.raw_state, visit_target, HOLD_RADIUS):
                     if phase_start is None:
                         phase_start = now
+                        self.get_logger().info(
+                            'Visit sphere entered at ({0:+.2f},{1:+.2f},'
+                            '{2:.2f})'.format(*self.raw_state))
                     elif now - phase_start >= VISIT_HOLD:
                         phase = 'save'
                         self.desired_state = list(save_target)
@@ -936,6 +939,9 @@ class WayPointServer(Node):
                         self.raw_state, save_target, HOLD_RADIUS):
                     if phase_start is None:
                         phase_start = now
+                        self.get_logger().info(
+                            'Save sphere entered at ({0:+.2f},{1:+.2f},'
+                            '{2:.2f})'.format(*self.raw_state))
                     elif now - phase_start >= SAVE_HOLD:
                         outcome = 'succeeded'
                         break

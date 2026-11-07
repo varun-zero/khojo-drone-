@@ -45,19 +45,21 @@ Scoring used by the local scorer:
   speed = 26 * (150 - landing_time) / 150 * (survivors_saved / 6).
 - The exact grader weighting is not published. Treat the local scorer as a proxy, not ground truth.
 
-Current official result (v17, 84.52 s strict):
+Current official result (v20ref, 82.47 s strict):
 
-- Landing time: 84.52 s; portal landing clock is ≈83.98 s (0.54 s offset measured on the previous take).
-- Third critical save hold: 37.13 s.
-- Stable visits: J6 40.99–44.16 s, F2 54.83–55.74 s, B10 69.26–72.59 s (sphere runs; all after the 37.13 s Switch).
-- F6 hover: 80.22–83.52 s; touchdown 84.52 s; final z=15.03.
-- Critical raw holds at R=0.40 (Visit/Save): B3 1.92/2.71 s, I2 1.89/2.28 s, J10 1.93/2.80 s.
-- Stable raw holds at R=0.40 (Visit/Save): J6 1.79/2.46 s, F2 2.00/2.12 s, B10 1.96/2.93 s.
-- Every save also passes at R=0.38 (2.61/2.14/2.80/2.46/2.05/2.57 s); the bag has zero marker gaps above 0.10 s.
-- Obstacle raw clearances: D3 +0.47, I4 +0.47, E8 +0.76 units.
-- Projected score: 65.44/80 (48 survivors + 3 hover + 3 landing + 11.44 speed).
-- The previous v10 take (79.50 s) was submitted and the portal scored it 49.21/80, because B10's Visit was 0.79 s and J6's Save 1.70 s in the real 0.40 sphere. That is the central lesson: the grader's criterion is a sphere, not a per-axis box.
-- The v17 build recorded 84.52, 85.67, 86.31 and 85.40 s takes, plus 102.20 s (failed I2) and 105.96 s (clean but slow). Run-to-run variance is real, and the server console can overstate a Save.
+- Landing time: 82.47 s; portal landing clock is ≈81.93 s (0.54 s offset measured on an earlier take).
+- Third critical save hold: 40.05 s.
+- Stable visits (sphere runs, all after the 40.05 s Switch): J6 43.62–45.86 s, F2 55.29–57.25 s, B10 66.72–68.09 s.
+- F6 hover: 79.19–81.30 s; touchdown 82.47 s; final z=14.88.
+- Critical raw holds at R=0.40 (Visit/Save): B3 2.10/2.80 s, I2 1.90/2.29 s, J10 1.58/2.80 s.
+- Stable raw holds at R=0.40 (Visit/Save): J6 2.24/2.57 s, F2 1.96/2.84 s, B10 1.36/3.04 s.
+- Every save also passes at R=0.38 (2.76/2.29/2.76/2.57/2.70/3.04 s); every visit passes at 0.38 too. The bag has 2,722 marker frames at 30.58 Hz and zero gaps above 0.10 s.
+- Obstacle raw clearances: D3 +0.57, I4 +0.70, E8 +0.94 units (inflated-margin clearances −0.23/−0.09/+0.14).
+- Projected score: 65.80/80 (48 survivors + 3 hover + 3 landing + 11.80 speed); 65.71 if the portal offset does not recur.
+- The previous v17 take (84.52 s) projected 65.44/80 and passed the same 12/12 sphere checks. The v20ref re-run lost 2.9 s reaching the Switch but recovered 5.0 s in the stable phase and landing.
+- The earlier v10 take (79.50 s) was submitted and the portal scored it 49.21/80, because B10's Visit was 0.79 s and J6's Save 1.70 s in the real 0.40 sphere. That is the central lesson: the grader's criterion is a sphere, not a per-axis box.
+- Motion analysis from a recorded screen run: XY stop overshoot is 0.15–0.43 units (baseline 0.33–0.72), which still passes through the sphere; the costly transient is Save-depth ringing (0.84–4.27 s to settle) and occasional stochastic yaw spins (up to ±150°, ≈10 s). Z-deadband, braking-cap and yaw-guard fixes were all slower or failed.
+- Run-to-run variance is real, and the server console can overstate a Save. The v17 build recorded 84.52, 85.67, 86.31 and 85.40 s takes, plus 102.20 s (failed I2) and 105.96 s (clean but slow); the v20ref re-run landed at 82.47 s.
 
 Files and responsibilities:
 
@@ -107,7 +109,7 @@ Work through the code and the report, not just the README. Cite file names and l
    - Whether the planner can return a route that is valid on the grid but unsafe for the controller's corner-cutting behavior.
 
 4. Timing and optimization
-   - Where the 84.52 s is spent. Use the report's timeline and the code to build a time budget.
+   - Where the 82.47 s is spent. Use the report's timeline and the code to build a time budget.
    - Which waits are structural (hold times, plan time, action settling) and which are controller inefficiency.
    - The highest-leverage changes to reach a lower landing time without risking the 55 s deadline or the raw holds.
    - Whether the stable phase can be shortened by better ordering, fewer pass-through stops, or a different Save policy.
@@ -172,7 +174,7 @@ List the assumptions you had to make and the information that would change your 
 ## Style
 
 - Be specific and quantitative. “Tune the controller” is not acceptable; “change K_POS_Z from 0.60 to 0.70 and expect a 0.2 s faster settle, validated by the 2 s raw hold at B3” is acceptable.
-- Distinguish correlation from causation. The 87.30 s and 93.24 s takes were re-runs of the same build; the 79.50 s v10 take and the 84.52 s v17 take are real code changes, but the sphere criterion changed the result more than the speed. Run-to-run variance is still large; ask for repeated runs before attributing a gain to any single constant.
+- Distinguish correlation from causation. The 87.30 s and 93.24 s takes were re-runs of the same build; the 79.50 s v10 take and the 84.52 s v17 take are real code changes, but the sphere criterion changed the result more than the speed. The 82.47 s v20ref take is another no-code-change re-run of v17 (only logging was added), so treat its gain as run-to-run variation, not a control improvement. Run-to-run variance is still large; ask for repeated runs before attributing a gain to any single constant.
 - Prefer small, reversible changes with a clear metric.
 - Do not invent APIs, files, or results. If the attached files do not contain something, say so.
 - Do not suggest changing the scoring rules or the task contract.

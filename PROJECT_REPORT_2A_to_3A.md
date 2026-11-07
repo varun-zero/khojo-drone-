@@ -42,7 +42,7 @@
 | **2A** | Fly to `(1.5, −1.5, 13)` and hold inside ±0.4 for the 60 s scoring window | **20.00/20**, 10 consecutive perfect runs | box entry 4.92–5.02 s, continuous hold 56.1–56.4 s, all axes ±0.02 | 64.7 s, 3 topics |
 | **2B** | Visit four fixed waypoints in order; 3 s inside ±0.4 at each | **40.00/40**, every run across four builds | 4th hold 28.50 s from controller start, 32.12 s from bag start | 34.7 s, 2 topics |
 | **2C** | Detect four red critical survivors, Visit each 3 s at Z=13 | **40.00/40**, seven hardened full-mission runs | 4th hold 30.46 s from controller start (submitted bag) | 59.8 s, 2 topics |
-| **3A** | Save 3 critical survivors by 55 s, then Visit 3 stable survivors, avoid 3 obstacles, hover and land on F6 within 200 s | **all objectives PASS**, full marks on time, **65.44/80 projected** (portal scored the earlier v10 take 49.21) | 3rd critical Save 37.13 s; F6 hover 80.22–83.52 s; touchdown **84.52 s** | 90.5 s, 3 topics |
+| **3A** | Save 3 critical survivors by 55 s, then Visit 3 stable survivors, avoid 3 obstacles, hover and land on F6 within 200 s | **all objectives PASS**, full marks on time, **65.80/80 projected** (portal scored the earlier v10 take 49.21) | 3rd critical Save 40.05 s; F6 hover 79.19–81.30 s; touchdown **82.47 s** | 89.0 s, 3 topics |
 
 The work progressed in four distinct engineering steps:
 
@@ -76,9 +76,16 @@ exposed the missing detail: the hold test is a **3-D Euclidean sphere of radius
 0.40**, not a per-axis ±0.4 box. Two holds that the box scorer called complete were
 short in the sphere (B10 Visit 0.79 s, J6 Save 1.70 s). The sphere was verified
 against the golden bag (48/48 holds) and against the v10 failure strings, then the
-controller was rebuilt around it. The final take (v17, **84.52 s**) passes all
-twelve holds at R=0.40 and again at R=0.38 with zero marker gaps, and projects
-**65.44/80**. Section 6.12 documents that campaign.
+controller was rebuilt around it. The v17 take (84.52 s) passed all twelve holds
+at R=0.40 and again at R=0.38 with zero marker gaps and projected 65.44/80.
+Section 6.12 documents that campaign.
+
+The final v20ref take (**82.47 s**) uses the same flight code with only
+sphere-entry logging added. It repeats 12/12 holds at R=0.40 and R=0.38, zero
+marker gaps, and improves the projection to **65.80/80** (65.71 without the
+portal offset). The motion campaign behind that selection — the recorded screen
+run, the XY overshoot and Save-depth ringing measurements, and the rejected Z
+deadband, braking-cap and yaw-guard experiments — is documented in section 6.13.
 
 ---
 
@@ -874,7 +881,7 @@ RESYNC_COUNT    = 5         re-sync only after five consistent outliers
 
 This protects against a stray blob or a second bridge writing the same topics.
 
-### 6.8 Final run results (v17, 2026-11-05)
+### 6.8 Final run results (v20ref, 2026-11-06)
 
 Arena:
 
@@ -888,42 +895,66 @@ Timeline (sphere scorer, scoring clock = first `/controller_heartbeat`):
 
 | Event | Time |
 |---|---|
-| Critical B3 Visit / Save | 7.99–9.91 / 10.28–12.99 s |
-| Critical I2 Visit / Save | 20.52–22.41 / 22.91–25.19 s |
-| Critical J10 Visit / Save | 32.84–34.77 / 35.20–38.00 s |
-| Third Save hold complete (Switch) | **37.13 s** (limit 55 s) |
-| Stable J6 Visit / Save | 42.37–44.16 / 47.40–49.87 s |
-| Stable F2 Visit / Save | 56.47–58.47 / 60.76–62.89 s |
-| Stable B10 Visit / Save | 70.63–72.59 / 72.82–75.76 s |
-| F6 hover | 80.22–83.52 s |
-| Touchdown | **84.52 s** |
-| Client success line | ≈84.9 s (adds `TOUCHDOWN_HOLD`) |
+| Critical B3 Visit / Save | 7.71–9.80 / 12.98–15.78 s |
+| Critical I2 Visit / Save | 23.40–25.31 / 25.78–28.07 s |
+| Critical J10 Visit / Save | 36.27–37.86 / 38.05–40.85 s |
+| Third Save hold complete (Switch) | **40.05 s** (limit 55 s) |
+| Stable J6 Visit / Save | 43.62–45.86 / 46.12–48.69 s |
+| Stable F2 Visit / Save | 55.29–57.25 / 57.52–60.36 s |
+| Stable B10 Visit / Save | 66.72–68.09 / 69.99–73.03 s |
+| F6 hover | 79.19–81.30 s |
+| Touchdown | **82.47 s** |
 
 **All objectives PASS; full marks on time (≤110 s).** The third critical Save was
-17.9 s inside the 55 s limit, and the first stable Visit began 5.2 s after the Switch.
+14.95 s inside the 55 s limit, and the first stable Visit began 3.57 s after the
+Switch.
+
+Sphere holds at R=0.40 (longest continuous raw run; no gap bridging):
+
+| Survivor | Visit | Save | Save at R=0.38 |
+|---|---|---|---|
+| B3 | 2.10 | 2.80 | 2.76 |
+| I2 | 1.90 | 2.29 | 2.29 |
+| J10 | 1.58 | 2.80 | 2.76 |
+| J6 (stable) | 2.24 | 2.57 | 2.57 |
+| F2 (stable) | 1.96 | 2.84 | 2.70 |
+| B10 (stable) | 1.36 | 3.04 | 3.04 |
+
+Every hold passes at R=0.40 and again at R=0.38; the thinnest is B10 Visit at
+1.36 s, 0.36 s of slack. The bag has 2,722 marker frames at 30.58 Hz and zero
+gaps above 0.10 s.
 
 Obstacle clearance (raw detected footprint / planner's inflated margin):
 
 | Obstacle | Closest raw clearance | Closest inflated clearance | Closest approach |
 |---|---|---|---|
-| D3 | **+0.47 units** | −0.32 | t=64.39 s, (x=+1.24, y=+2.74) |
-| I4 | **+0.47 units** | −0.31 | t=51.43 s, (x=−2.81, y=+1.22) |
-| E8 | **+0.76 units** | −0.03 | t=67.19 s, (x=+3.03, y=−1.59) |
+| D3 | **+0.57 units** | −0.23 | t=61.93 s, (x=+1.14, y=+2.78) |
+| I4 | **+0.70 units** | −0.09 | t=50.57 s, (x=−2.67, y=+1.02) |
+| E8 | **+0.94 units** | +0.14 | t=74.80 s, (x=+3.41, y=−1.88) |
 
 D3 and I4 entered the planner's 0.65-cell margin during corner cutting but stayed
-outside the actual obstacle footprints. E8 grazed the inflated boundary by 0.03
-units. The scorer passes on the raw footprint; the margin caveat is recorded in
+outside the actual obstacle footprints; E8 stayed outside even the inflated
+margin. The scorer passes on the raw footprint; the margin caveat is recorded in
 section 10.
 
 Bag (`task_3a_0.db3`):
 
 ```
-duration   90.5 s
-messages   6,395
-topics     /whycode_node/markers   2,762
-           /controller_heartbeat      871
-           /ros_check               2,762
+duration   89.0 s
+messages   6,303
+topics     /whycode_node/markers   2,722
+           /controller_heartbeat      859
+           /ros_check               2,722
 ```
+
+#### 6.8.1 The v17 take (superseded)
+
+The previous submission (v17, 84.52 s) used the same flight logic and passed the
+same 12/12 sphere checks at R=0.40 and R=0.38, but its third Save completed at
+37.13 s and it spent 47.4 s on the stable phase and landing. The v20ref re-run
+lost 2.9 s reaching the Switch but recovered 5.0 s afterwards, for a net
+**2.05 s** gain. See section 6.13 for the motion analysis that motivated the
+re-runs and the experiments that were rejected.
 
 ### 6.9 Packaging and scoring
 
@@ -958,19 +989,19 @@ KD_4373_task_3a.zip
   metadata.yaml
 ```
 
-Size **634,716 bytes**; SHA-256
-`77a396e34e6ec5070fbcc04609b7ff71ae11531a625581ee64f12a1ef4b05a8f`.
+Size **624,969 bytes**; SHA-256
+`9f194abfc00332a95f6816686f5bc55ffb14f0d7b3fad20c8d4ee4cd9433aaf0`.
 No launch file, no folder nesting, no empty files.
 
 The packaged source uses `OBSTACLE_CLEARANCE_CELLS = 0.65`, the baseline that
 produced this bag, and `SAVE_FAST_MARGIN = 1.00`, which disables the old
 open-loop 0.8 m/s Save dive and leaves the proportional Z loop in charge. The
 client carries the 15 s Save grace; the bag's third Save hold completes at
-37.13 s, so the grace branch is never reached and the fast path is unchanged. The
+40.05 s, so the grace branch is never reached and the fast path is unchanged. The
 server's control loop still uses the filtered pose; only the Visit/Save/hover
-hold tests use `raw_state`. The v17 retune changes only
-`KD_4373_pico_server.py`; the client and waypoint service are byte-identical to
-the 87.30 s golden package.
+hold tests use `raw_state`. The v20ref take changes only
+`KD_4373_pico_server.py`, and only by adding six lines of sphere-entry logging;
+the client and waypoint service are byte-identical to v17.
 
 ### 6.10 Official runner
 
@@ -1201,6 +1232,57 @@ pass at R=0.40 and R=0.38.
 
 ---
 
+### 6.13 Motion analysis from the recorded screen run
+
+The user asked for the whole process to be recorded, then analysed, because the
+drone appeared to overshoot when moving between points. The mission was re-run
+with a Windows-side `mss` screen recorder capturing the MuJoCo view at 1920×1080.
+The recording produced 1,050 frames over 174.83 s (6.00 fps) and the flight
+itself took 108.36 s at 28.44 Hz, versus 82.47 s for the clean bag. The extra
+load is real, so the video is diagnostic evidence only; it is not a candidate
+submission.
+
+The recorded trajectory was plotted in `traj_baseline_xy.png` and
+`traj_baseline_speed.png`. The baseline accelerates to 2.2–2.9 units/s on the
+long legs, then spends the last 0.5–1.0 unit of each approach at low speed. Stop
+overshoot past the survivor centre is 0.33–0.72 units. The final controller
+reduces that to **0.15–0.43 units**:
+
+| Survivor | Approach speed | Stop overshoot | Save Z overshoot |
+|---|---|---|---|
+| I2 | 1.15 u/s | +0.147 | +0.28 |
+| B3 | 1.50 u/s | +0.257 | +0.28 |
+| J10 | 2.00 u/s | +0.357 | +0.27 |
+| F2 | 1.93 u/s | +0.425 | +0.26 |
+| J6 | 2.02 u/s | +0.181 | +0.29 |
+| B10 | 1.72 u/s | +0.307 | +0.17 |
+
+The residual XY overshoot does not by itself lose the hold: the drone passes
+through the 0.40 sphere before the apex and the sphere replay still gives
+1.36–2.24 s Visits and 2.29–3.04 s Saves. The costly transient is vertical. After
+the Save dive the depth loop rings around `Z = 14`; time from the dive to a
+settled Save is B3 **4.27 s**, F2 **2.63 s**, B10 **2.31 s**, J6 **1.50 s**,
+I2 **1.36 s**, J10 **0.84 s**, and every re-entry restarts the 2 s sphere hold.
+
+Three fixes were flown and rejected:
+
+| Experiment | Result | Decision |
+|---|---|---|
+| `Z_DEADBAND = 0.18` | Isolated B3 descent clean (zmax 14.06, rebound 13.96); full run **92.29 s** because a ±150° yaw spin cost ≈10 s | Reverted |
+| `BRAKE_DECEL_XY = 0.85` vector braking | Isolated B3 stop **12.2 s vs 9.2 s** baseline, confounded by a yaw spin to +171° | Reverted |
+| `YAW_MAX = 480` + level-out guard | **Mission failed**: overshot J10 to (−6.22, −7.36), yaw rate 80.9°/s with `rc_yaw = 1020`; three goals aborted, exit 1 | Reverted |
+
+The yaw data explains the variance. The 82.47 s take stayed within
+−12.2°..+25.9° with a 38.3°/s peak; the 92.29 s same-code run swung
+−153.5°..+147.3° with a 108.2°/s peak on the J6→F2 leg. The spin is a simulator
+disturbance, not a tuning error, and the guard fought it badly enough to lose the
+mission. The final decision is therefore to keep the v17 flight logic unchanged,
+select the take by bag-level sphere replay, and not chase the spin with a new
+controller mode. The screen video remains the evidence for the overshoot and
+ringing analysis.
+
+---
+
 ## 7. Cross-task design evolution
 
 | Layer | Task 2A | Task 2B | Task 2C | Task 3A |
@@ -1298,18 +1380,18 @@ and copies it to `C:\Users\varun`.
 |---|---|---|
 | `KD_4373_waypoint_service.py` | 52,740 | `36320a964b48fed1e3048ea7a4c18d5c37ffc371aacad4842dfa5884857b9c94` |
 | `KD_4373_pico_client.py` | 18,345 | `677249c3c8a48ab3943bf4e62f225d391b93e77f2627fd63b6125c1776c6d825` |
-| `KD_4373_pico_server.py` | 49,377 | `09787bc991076e5d765517d13b36d861ca9d73ab6eeea36f84de0367645651f5` |
-| `task_3a_0.db3` | 1,753,088 | `6c24c08845cea39cfe1561b8d2be0b2571f3b4ba7de5c0dfc38522dad92d1d9f` |
-| `metadata.yaml` | 1,978 | `fdb25beb58ca1a6181416f15499c4d410314090df7a3ac19ab87b3aac9108cee` |
+| `KD_4373_pico_server.py` | 49,748 | `c141fcdc0256801cc4b3350d06bf1ef45b928a17986e8eeb4860568f51eea64b` |
+| `task_3a_0.db3` | 1,728,512 | `1695b3146ff1e24fed845ab9e7ba513616bf01d14851e32d61f817e092016262` |
+| `metadata.yaml` | 1,978 | `892abc8fc6e46818f7e0c90f8bdf67e98aa66882fc854f738d71b73ceb4617d1` |
 
-Zip size **634,716 bytes**; SHA-256
-`77a396e34e6ec5070fbcc04609b7ff71ae11531a625581ee64f12a1ef4b05a8f`.
+Zip size **624,969 bytes**; SHA-256
+`9f194abfc00332a95f6816686f5bc55ffb14f0d7b3fad20c8d4ee4cd9433aaf0`.
 
 ### 9.2 Current Task 3A folders
 
 | Path | Contents |
 |---|---|
-| `C:\Users\varun\KD_4373_task_3a.zip` | official flat submission (84.52 s, v17) |
+| `C:\Users\varun\KD_4373_task_3a.zip` | official flat submission (82.47 s, v20ref) |
 | `C:\Users\varun\KD_4373_task_3a_8730_golden.zip` | previous 87.30 s package, preserved unchanged |
 | `C:\Users\varun\KD_4373_task_3a_unzipped\` | unpacked copy of the five official files |
 | `C:\Users\varun\KD_4373_task_3a_9324_fallback.zip` | previous 93.24 s package, preserved unchanged |
@@ -1323,7 +1405,7 @@ Zip size **634,716 bytes**; SHA-256
 | 2A | `KD_4373_task_2a.zip` (176,338 B) | `task_2a_0.db3` (64.7 s) | 20.00/20 |
 | 2B | `KD_4373_task_2b.zip` (99,329 B) | `task_2b_0.db3` (34.7 s) | 40.00/40 |
 | 2C | `KD_4373_task_2c.zip` | `task_2c_0.db3` (59.8 s) | 40.00/40 |
-| 3A | `KD_4373_task_3a.zip` (634,716 B) | `task_3a_0.db3` (90.5 s) | all objectives PASS; 65.44/80 projected |
+| 3A | `KD_4373_task_3a.zip` (624,969 B) | `task_3a_0.db3` (89.0 s) | all objectives PASS; 65.80/80 projected |
 
 ### 9.4 What was checked before submission
 
@@ -1337,7 +1419,7 @@ Zip size **634,716 bytes**; SHA-256
 - `score3a.py` passes every objective on the packaged bag.
 - `score3a_strict.py` (no gap bridging) also passes every objective, including
   all twelve Visit/Save holds at the 0.40 sphere and again at 0.38.
-- The bag has zero marker gaps above 0.10 s across 2,762 frames.
+- The bag has zero marker gaps above 0.10 s across 2,722 frames.
 - `SHA256SUMS.txt` verifies every backup file and the delivered zip.
 
 ---
@@ -1345,20 +1427,20 @@ Zip size **634,716 bytes**; SHA-256
 ## 10. Known limitations and caveats
 
 1. **Obstacle margin cuts on D3 and I4.** The final trajectory stayed outside the
-   actual detected footprints (+0.47 and +0.47 units) but entered the planner's
-   0.65-cell inflation by 0.32 and 0.31 units while corner-cutting. E8 cleared the
-   raw footprint by +0.76 but grazed the inflated boundary by 0.03. The scorer
-   passes on the raw footprint. If the grader uses the inflated polygon, those
-   passes would be treated as close; the plan is conservative, but the controller's
-   corner cutting consumes part of that margin.
-2. **Depth is the noisiest channel.** The final take rested at 15.03, 0.38 above
-   the 14.65 floor; rest depth varied 14.73–15.03 across runs. The landing relies
-   on the stall backstop as much as the fixed 14.75 threshold.
+   actual detected footprints (+0.57 and +0.70 units) but entered the planner's
+   0.65-cell inflation by 0.23 and 0.09 units while corner-cutting. E8 cleared the
+   raw footprint by +0.94 and stayed outside the inflated boundary by +0.14. The
+   scorer passes on the raw footprint. If the grader uses the inflated polygon,
+   those passes would be treated as close; the plan is conservative, but the
+   controller's corner cutting consumes part of that margin.
+2. **Depth is the noisiest channel.** The final take rested at 14.88 (server log
+   14.85), 0.23 above the 14.65 floor; rest depth varied 14.73–15.03 across runs.
+   The landing relies on the stall backstop as much as the fixed 14.75 threshold.
 3. **Stable stops also Save.** The server treats every `hover=True` goal as a
    Visit+Save. This is deliberate: the portal's speed term multiplies by
    `survivors_saved / 6`, so Visit-only stable stops would halve the speed marks.
    The stable Save uses the same 2.10 s server hold at R=0.38; in the final take
-   the three stable Saves run 2.46 / 2.12 / 2.93 s in the 0.40 sphere. The task
+   the three stable Saves run 2.57 / 2.84 / 3.04 s in the 0.40 sphere. The task
    text requires only the stable Visit.
 4. **Camera tile changed after the validated take.** `official_run.sh` moved the
    viewer to `VIEW_X=1400 VIEW_Y=480 VIEW_SIZE=430` because the old tile clipped the
@@ -1379,17 +1461,27 @@ Zip size **634,716 bytes**; SHA-256
    measure for slow hosts, not a way to meet the 55 s objective: a Save that
    finishes after 55 s is still scored LATE. It was validated at a 0.806 sim rate
    (Rebuild F); on the official fast setup the branch is never reached.
-10. **The hold criterion is a 0.40 sphere, verified from portal feedback.** The portal reported B10 Visit 0.79 s and J6 Save 1.70 s for a bag that passed the old per-axis box scorer; the same bag replayed against a 3-D sphere of radius 0.40 reproduces both strings exactly, and the golden bag passes 48/48 sphere holds. The server tests its own holds at R=0.38, 0.02 inside the grader, with no stale-pose credit. The final bag passes all 12 holds at R=0.40 and again at R=0.38; the thinnest is F2 Save at 2.12 s (0.40) and 2.05 s (0.38).
+10. **The hold criterion is a 0.40 sphere, verified from portal feedback.** The portal reported B10 Visit 0.79 s and J6 Save 1.70 s for a bag that passed the old per-axis box scorer; the same bag replayed against a 3-D sphere of radius 0.40 reproduces both strings exactly, and the golden bag passes 48/48 sphere holds. The server tests its own holds at R=0.38, 0.02 inside the grader, with no stale-pose credit. The final bag passes all 12 holds at R=0.40 and again at R=0.38; the thinnest is B10 Visit at 1.36 s (1.36 s at 0.38, 0.36 s of slack).
 11. **Console success can precede bag success.** When marker samples are rejected
     or dropped, the server keeps counting hold time on the last stored
     `raw_state`. A 75.67 s v10 run looked complete on the console but its J10 raw
     run was only 1.66 s; v15's J6 Save was split to 1.40 s by one rejected
     `z=14.50` sample. Bags are therefore selected by `saveruns.py`, not by the
     console; the final bag is the fastest whose twelve sphere holds all pass.
-12. **Host load changes the result.** At a 28 Hz marker rate (versus 30.5 Hz for
-    the final take) the identical build flew 95–106 s and showed pose glitches up
-    to 1.27 units. The final bag comes from a clean 30.5 Hz session; re-recording
+12. **Host load changes the result.** At a 28 Hz marker rate (versus 30.6 Hz for
+    the final take) the identical build flew 95–108 s and showed pose glitches up
+    to 1.27 units. The final bag comes from a clean 30.6 Hz session; re-recording
     it on a loaded host is not equivalent.
+13. **Yaw-spin events dominate the remaining variance.** The simulator
+    occasionally injects an uncommanded yaw excursion. The 82.47 s take stayed
+    within −12.2°..+25.9° at a 38.3°/s peak; a same-code 92.29 s take swung
+    −153.5°..+147.3° at 108.2°/s and lost ≈10 s. A level-out guard was tried and
+    caused a mission failure (J10 overshoot to (−6.22, −7.36), `rc_yaw = 1020`,
+    three goals aborted), so the spin is left to the normal controller recovery.
+14. **The screen recording is diagnostic, not a scored bag.** The `mss` capture
+    ran at 6 fps and loaded the host enough to slow the mission to 108.36 s at
+    28.44 Hz. It is used for the overshoot/ringing analysis in section 6.13; the
+    official bag remains an unrecorded 30.6 Hz run.
 
 ---
 
@@ -1411,7 +1503,9 @@ Zip size **634,716 bytes**; SHA-256
 | 2026-11-03 | Portal scored the 79.50 s take **49.21/80** (B10 Visit 0.79 s, J6 Save 1.70 s); the 0.40 sphere criterion was reverse-engineered and verified against the golden bag (48/48) |
 | 2026-11-04 | Sphere-hold server (R=0.38, 0.15 s freshness), XY control filter, separate `gate_pos`; v13_b 86.31 s, v14_a 85.67 s, v15 rejected (J6 Save 1.40 s), v16 failed I2 |
 | 2026-11-05 | v17 recorded at **84.52 s**; 12/12 sphere holds at R=0.40 and R=0.38; five-file zip rebuilt and re-scored from the extracted archive |
-| 2026-11-06 | Report, README and review prompt corrected to v17; official zip copied to `C:\Users\varun`; repository force-pushed |
+| 2026-11-06 | Full mission recorded at 1920×1080 for motion analysis; overshoot (0.15–0.43 units) and Save-depth ringing (0.8–4.3 s) quantified; Z-deadband, braking-cap and yaw-guard experiments rejected |
+| 2026-11-06 | v20ref re-run at **82.47 s**; 12/12 sphere holds at R=0.40 and R=0.38; v20ref becomes the official take and the five-file zip is rebuilt |
+| 2026-11-07 | Report, README and review prompt updated to v20ref; official bag, hashes and zip re-verified; repository force-pushed |
 
 ---
 
@@ -1601,12 +1695,15 @@ $$\text{Speed Marks} = 26 \times \frac{150 - 86.76}{150} \times 1.0 = 26 \times 
 
 $$\text{Total Portal Score} = 48 + 3 + 3 + 10.97 = \mathbf{64.97 \text{ / } 80}$$
 
-For the final 84.52 s take the same 0.54 s offset gives a portal landing clock
-of 83.98 s:
+For the final 82.47 s take the same 0.54 s offset gives a portal landing clock
+of 81.93 s:
 
-$$\text{Speed Marks} = 26 \times \frac{150 - 83.98}{150} \times 1.0 = 26 \times 0.4401 = 11.44 \text{ / } 26$$
+$$\text{Speed Marks} = 26 \times \frac{150 - 81.93}{150} \times 1.0 = 26 \times 0.4538 = 11.80 \text{ / } 26$$
 
-$$\text{Total Portal Score} = 48 + 3 + 3 + 11.44 = \mathbf{65.44 \text{ / } 80}$$
+$$\text{Total Portal Score} = 48 + 3 + 3 + 11.80 = \mathbf{65.80 \text{ / } 80}$$
+
+Using the strict 82.47 s without the offset gives 11.71 speed marks and
+**65.71/80**, the conservative floor.
 
 The earlier 79.50 s take was projected at 66.22 but the portal scored it
 **49.21**, because B10's Visit and J6's Save failed the 0.40 sphere. The projection
@@ -1626,7 +1723,7 @@ above uses the sphere-verified bag, not the old box scorer.
    - Total route trajectory length across the planned route is $\sim 60.4$ whycode units ($\sim 52.8$ units of grid tour plus snap offsets).
    - At a maximum tilt angle of $8.5^\circ$ ($a_{\text{max}} \approx 1.45\text{ m/s}^2$) and terminal drag velocity limit of $1.80\text{ m/s}$, the minimum kinematic transit time is $\sim 38-42\text{ seconds}$.
    - Realistic physical limit for full-mission completion in MuJoCo: $\mathbf{t_{\text{landing}} \approx 65 - 70\text{ s}}$, yielding a maximum achievable score of $\mathbf{68.0 - 69.5 \text{ / } 80}$.
-   - The 84.52 s final take is 15–20 s above that band; the remaining gap is
+   - The 82.47 s final take is 12–17 s above that band; the remaining gap is
      mostly corner deceleration, the longer sphere-safe holds and the 0.65-cell
      obstacle inflation, all of which were tested and traded away against hold
      reliability.
@@ -1651,7 +1748,11 @@ above uses the sphere-verified bag, not the old box scorer.
 | **Trial 13** | $K_{\text{pos}}=1.0$ at $V_{\text{max}}=1.8$ | 84.7 / 85.2 s | PASS (slow) | 5–6 F2 hold resets from terminal overshoot; the higher gain needs the lower cruise. |
 | **Trial 14** | Per-phase $K_{\text{pos\_pass}}=1.30$ | 79.6 s | PASS (rejected) | E8 inflated clearance collapsed to +0.013 and Save holds became unreliable; clearance margin is worth more than 0.1 s. |
 | **Trial 15 (v10, previous submission)** | $K_{\text{pos}}=0.9$, $V_{\text{max}}=1.8$, $K_{\text{rc}}=140$, $K_{\text{rc\_z}}=105$, box=0.37, $\text{SAVE\_CTRL\_Z}=13.92$, soft approach/landing | **79.50 / 80.78 s** | PASS box; **FAIL sphere** (portal **49.21/80**) | Lower gain tamed the 1.8 m/s overshoot, but B10 Visit was 0.79 s and J6 Save 1.70 s in the real 0.40 sphere. |
-| **Trial 16 (v17, final submission)** | Sphere holds at R=0.38 (1.10 / 2.10 s), $V_{\text{max}}=2.20$, XY filter 0.50, separate `gate_pos`, $\text{SAVE\_CTRL\_Z}=14.0$ | **84.52 s** | **PASS (65.44/80 projected)** | All 12 holds pass at R=0.40 and R=0.38, zero marker gaps; third Save 37.13 s; clearances +0.47 / +0.47 / +0.76. |
+| **Trial 16 (v17, previous submission)** | Sphere holds at R=0.38 (1.10 / 2.10 s), $V_{\text{max}}=2.20$, XY filter 0.50, separate `gate_pos`, $\text{SAVE\_CTRL\_Z}=14.0$ | **84.52 s** | **PASS (65.44/80 projected)** | All 12 holds pass at R=0.40 and R=0.38, zero marker gaps; third Save 37.13 s; clearances +0.47 / +0.47 / +0.76. |
+| **Trial 17** | Z deadband 0.18 to damp the Save ring | 92.29 s | PASS | Isolated B3 descent clean (zmax 14.06, rebound 13.96), but a ±150° yaw spin cost ≈10 s; the deadband did not address the dominant loss. Reverted. |
+| **Trial 18** | Horizontal braking cap 0.85 (vector deceleration) | isolated test | FAIL (timing) | B3 stop 12.2 s vs 9.2 s baseline, confounded by a yaw spin to +171°; braking harder made the approach slower. Reverted. |
+| **Trial 19** | `YAW_MAX=480` + level-out guard when $|yaw\_rate|>28°/s$ for 0.4 s | aborted | **FAIL (mission)** | Overshot J10 to (−6.22, −7.36), yaw rate 80.9°/s, `rc_yaw=1020`; three goals aborted, exit 1. Reverted. |
+| **Trial 20 (v20ref, final submission)** | **No control change**; v17 flight code plus two "sphere entered" log lines | **82.47 s** | **PASS (65.80/80 projected)** | All 12 holds pass at R=0.40 and R=0.38, zero marker gaps; third Save 40.05 s; stable phase + landing 5.0 s faster than v17; clearances +0.57 / +0.70 / +0.94. |
 
 ### 13.4 Primary Engineering Conclusion
 
@@ -1664,12 +1765,23 @@ Four rules summarize the campaign:
 3. **Validate at the bag level, in the criterion the grader uses.** The server's console can report success on stale `raw_state`; only continuous bag runs inside the 0.40 sphere prove a Visit or Save.
 4. **A server PASS is not a bag PASS.** A rejected outlier can extend the server's hold while remaining in the recording. The final selection replays every candidate with the naive sphere test.
 
-The final 84.52 s take is 15–20 s above the 65–70 s physical band. The remaining
+The final 82.47 s take is 12–17 s above the 65–70 s physical band. The remaining
 time is dominated by 20 s of server holds (six 1.10 s Visits, six 2.10 s Saves,
 one 1.10 s hover), ~16 s of vertical round trips, corner deceleration on a
 60.4-unit tour and the longer R=0.38 safety holds. The tested routes and gains that would recover 2–3 s
 each all failed a hold or clearance check. Within the reliability envelope the
-practical ceiling is ≈80 s, or ≈66/80; v17 sits at 65.44.
+practical ceiling is ≈80 s, or ≈66/80; v20ref sits at 65.71–65.80.
+
+The motion campaign sharpened the diagnosis. XY stop overshoot is real
+(0.15–0.43 units) but it is not the binding constraint: the drone still passes
+through the 0.40 sphere, so the overshoot costs little hold time. The binding
+constraints are the vertical ringing after each Save dive (0.8–4.3 s to settle)
+and the simulator's occasional large yaw spin (up to 150°, ≈10 s). Attempts to
+fix the overshoot directly — a Z deadband, a horizontal braking cap, and a yaw
+level-out guard — were all slower or outright unsafe, so the final decision was
+to keep the v17 flight code, add only sphere-entry logging, and take the fastest
+clean re-run. The 82.47 s bag beats the previous 84.52 s submission by 2.05 s and
+raises the projection from 65.44 to 65.80/80.
 
 ---
 
