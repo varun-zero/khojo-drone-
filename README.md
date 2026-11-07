@@ -253,6 +253,11 @@ include the departure from the sphere after the server's hold. The hold itself
 is 1.10 s (Visit) or 2.10 s (Save) at R=0.38, so every completed hold is at
 least that long at the grader's R=0.40.
 
+F2 is entered twice on the stable leg. The timeline shows the longest continuous
+Visit run (55.29–57.25 s), which is also the run tabulated below. The strict
+scorer's first qualifying pass starts at 53.89 s and is 0.93 s long, inside its
+0.12 s tolerance; the later 1.96 s run is the robust evidence for the portal.
+
 ### Raw hold margins
 
 Every value is the longest continuous run of raw marker samples inside the

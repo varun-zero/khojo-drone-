@@ -909,6 +909,11 @@ Timeline (sphere scorer, scoring clock = first `/controller_heartbeat`):
 14.95 s inside the 55 s limit, and the first stable Visit began 3.57 s after the
 Switch.
 
+F2 is entered twice on the stable leg. The timeline shows the longest continuous
+Visit run (55.29–57.25 s). The strict scorer's first qualifying pass starts at
+53.89 s and is 0.93 s long, inside its 0.12 s tolerance; the later 1.96 s run is
+the robust evidence for the portal.
+
 Sphere holds at R=0.40 (longest continuous raw run; no gap bridging):
 
 | Survivor | Visit | Save | Save at R=0.38 |
